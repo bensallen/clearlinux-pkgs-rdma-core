@@ -1,0 +1,1 @@
+-DCMAKE_INSTALL_SYSCONFDIR=/usr/share/defaults/rdma-core
