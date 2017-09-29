@@ -1,2 +1,4 @@
 # This file contains the output files that need %exclude. Full path
 # names, one per line.
+/usr/share/defaults/rdma-core/init.d
+/usr/share/defaults/rdma-core/udev/rules.d/70-persistent-ipoib.rules
