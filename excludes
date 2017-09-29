@@ -1,4 +1,12 @@
 # This file contains the output files that need %exclude. Full path
 # names, one per line.
-/usr/share/defaults/rdma-core/init.d
+
+/usr/libexec/truescale-serdes.cmds
+#
+/usr/share/defaults/rdma-core/init.d/ibacm
+/usr/share/defaults/rdma-core/init.d/iwpmd
+/usr/share/defaults/rdma-core/init.d/srpd
+/usr/share/defaults/rdma-core/modprobe.d/mlx4.conf
+/usr/share/defaults/rdma-core/modprobe.d/truescale.conf
+/usr/share/defaults/rdma-core/srp_daemon.conf
 /usr/share/defaults/rdma-core/udev/rules.d/70-persistent-ipoib.rules

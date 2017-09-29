@@ -4,7 +4,7 @@
 #
 Name     : rdma-core
 Version  : 15
-Release  : 1
+Release  : 7
 URL      : https://github.com/linux-rdma/rdma-core/releases/download/v15/rdma-core-15.tar.gz
 Source0  : https://github.com/linux-rdma/rdma-core/releases/download/v15/rdma-core-15.tar.gz
 Summary  : RDMA core userspace libraries and daemons
@@ -13,6 +13,7 @@ License  : BSD-2-Clause GPL-2.0 MIT
 Requires: rdma-core-bin
 Requires: rdma-core-config
 Requires: rdma-core-lib
+Requires: rdma-core-data
 Requires: rdma-core-doc
 BuildRequires : cmake
 BuildRequires : libnl-dev
@@ -26,6 +27,7 @@ scripts, dracut rules, and the rdma-ndd utility.
 %package bin
 Summary: bin components for the rdma-core package.
 Group: Binaries
+Requires: rdma-core-data
 Requires: rdma-core-config
 
 %description bin
@@ -40,11 +42,20 @@ Group: Default
 config components for the rdma-core package.
 
 
+%package data
+Summary: data components for the rdma-core package.
+Group: Data
+
+%description data
+data components for the rdma-core package.
+
+
 %package dev
 Summary: dev components for the rdma-core package.
 Group: Development
 Requires: rdma-core-lib
 Requires: rdma-core-bin
+Requires: rdma-core-data
 Provides: rdma-core-devel
 
 %description dev
@@ -62,6 +73,7 @@ doc components for the rdma-core package.
 %package lib
 Summary: lib components for the rdma-core package.
 Group: Libraries
+Requires: rdma-core-data
 Requires: rdma-core-config
 
 %description lib
@@ -76,15 +88,15 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1505918626
+export SOURCE_DATE_EPOCH=1506721489
 mkdir clr-build
 pushd clr-build
-cmake .. -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_SHARED_LIBS:BOOL=ON -DLIB_INSTALL_DIR:PATH=/usr/lib64 -DCMAKE_AR=/usr/bin/gcc-ar -DLIB_SUFFIX=64 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_RANLIB=/usr/bin/gcc-ranlib
+cmake .. -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_SHARED_LIBS:BOOL=ON -DLIB_INSTALL_DIR:PATH=/usr/lib64 -DCMAKE_AR=/usr/bin/gcc-ar -DLIB_SUFFIX=64 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_RANLIB=/usr/bin/gcc-ranlib -DCMAKE_INSTALL_SYSCONFDIR=/usr/share/defaults/rdma-core
 make VERBOSE=1  %{?_smp_mflags}
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1505918626
+export SOURCE_DATE_EPOCH=1506721489
 rm -rf %{buildroot}
 pushd clr-build
 %make_install
@@ -95,6 +107,7 @@ popd
 
 %files bin
 %defattr(-,root,root,-)
+%exclude /usr/libexec/truescale-serdes.cmds
 /usr/bin/cmtime
 /usr/bin/ib_acme
 /usr/bin/ibacm
@@ -125,25 +138,9 @@ popd
 /usr/bin/udaddy
 /usr/bin/udpong
 /usr/libexec/srp_daemon/start_on_all_ports
-/usr/libexec/truescale-serdes.cmds
 
 %files config
 %defattr(-,root,root,-)
-%config /usr/etc/init.d/ibacm
-%config /usr/etc/init.d/iwpmd
-%config /usr/etc/init.d/srpd
-%config /usr/etc/iwpmd.conf
-%config /usr/etc/modprobe.d/mlx4.conf
-%config /usr/etc/modprobe.d/truescale.conf
-%config /usr/etc/rdma/modules/infiniband.conf
-%config /usr/etc/rdma/modules/iwarp.conf
-%config /usr/etc/rdma/modules/iwpmd.conf
-%config /usr/etc/rdma/modules/opa.conf
-%config /usr/etc/rdma/modules/rdma.conf
-%config /usr/etc/rdma/modules/roce.conf
-%config /usr/etc/rdma/modules/srp_daemon.conf
-%config /usr/etc/srp_daemon.conf
-%config /usr/etc/udev/rules.d/70-persistent-ipoib.rules
 /usr/lib/systemd/system/ibacm.service
 /usr/lib/systemd/system/ibacm.socket
 /usr/lib/systemd/system/iwpmd.service
@@ -157,6 +154,39 @@ popd
 /usr/lib/udev/rules.d/90-rdma-hw-modules.rules
 /usr/lib/udev/rules.d/90-rdma-ulp-modules.rules
 /usr/lib/udev/rules.d/90-rdma-umad.rules
+
+%files data
+%defattr(-,root,root,-)
+%exclude /usr/share/defaults/rdma-core/init.d/ibacm
+%exclude /usr/share/defaults/rdma-core/init.d/iwpmd
+%exclude /usr/share/defaults/rdma-core/init.d/srpd
+%exclude /usr/share/defaults/rdma-core/modprobe.d/mlx4.conf
+%exclude /usr/share/defaults/rdma-core/modprobe.d/truescale.conf
+%exclude /usr/share/defaults/rdma-core/srp_daemon.conf
+%exclude /usr/share/defaults/rdma-core/udev/rules.d/70-persistent-ipoib.rules
+/usr/share/defaults/rdma-core/iwpmd.conf
+/usr/share/defaults/rdma-core/libibverbs.d/bnxt_re.driver
+/usr/share/defaults/rdma-core/libibverbs.d/cxgb3.driver
+/usr/share/defaults/rdma-core/libibverbs.d/cxgb4.driver
+/usr/share/defaults/rdma-core/libibverbs.d/hfi1verbs.driver
+/usr/share/defaults/rdma-core/libibverbs.d/hns.driver
+/usr/share/defaults/rdma-core/libibverbs.d/i40iw.driver
+/usr/share/defaults/rdma-core/libibverbs.d/ipathverbs.driver
+/usr/share/defaults/rdma-core/libibverbs.d/mlx4.driver
+/usr/share/defaults/rdma-core/libibverbs.d/mlx5.driver
+/usr/share/defaults/rdma-core/libibverbs.d/mthca.driver
+/usr/share/defaults/rdma-core/libibverbs.d/nes.driver
+/usr/share/defaults/rdma-core/libibverbs.d/ocrdma.driver
+/usr/share/defaults/rdma-core/libibverbs.d/qedr.driver
+/usr/share/defaults/rdma-core/libibverbs.d/rxe.driver
+/usr/share/defaults/rdma-core/libibverbs.d/vmw_pvrdma.driver
+/usr/share/defaults/rdma-core/rdma/modules/infiniband.conf
+/usr/share/defaults/rdma-core/rdma/modules/iwarp.conf
+/usr/share/defaults/rdma-core/rdma/modules/iwpmd.conf
+/usr/share/defaults/rdma-core/rdma/modules/opa.conf
+/usr/share/defaults/rdma-core/rdma/modules/rdma.conf
+/usr/share/defaults/rdma-core/rdma/modules/roce.conf
+/usr/share/defaults/rdma-core/rdma/modules/srp_daemon.conf
 
 %files dev
 %defattr(-,root,root,-)
